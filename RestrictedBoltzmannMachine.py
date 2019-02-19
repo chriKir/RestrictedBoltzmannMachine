@@ -35,14 +35,17 @@ class RBM:
 
     def train(self, data, max_epochs=1000, learning_rate=0.1, m=1000, k=5):
         initSamples = self.initRandomSamples(m)
-        num_examples = data.shape[0]
+        if(m == -1):
+            num_examples = data.shape[0]
+        else:
+            num_examples = m
 
         # Insert bias units of 1 into the first column.
         data = np.insert(data, 0, 1, axis=1)
 
         for epoch in range(max_epochs):
             if(m != -1):
-                samples = self.getRandomSamples(m)
+                samples = self.getRandomSamples(data,m)
             # positive phase
             if(m == -1):
                 pos_activations = np.dot(data, self.weights)
@@ -121,7 +124,7 @@ if __name__ == '__main__':
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    r.train(imgs, max_epochs=2000, m=-1)
+    r.train(imgs, max_epochs=2000)
     generated = r.markovChain(10)
 
     for img in generated:
