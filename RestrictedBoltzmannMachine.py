@@ -19,34 +19,43 @@ class RBM:
         self.weights = np.insert(self.weights, 0, 0, axis = 0)
         self.weights = np.insert(self.weights, 0, 0, axis = 1)
 
-    def getRandomSamples(self, data, k=2000):
+    def getRandomSamples(self, data, k=1000):
         samples = np.zeros((k, self.num_visible_nodes+1), dtype=np.dtype('b'))
         for i in range(k):
             samples[i] = data[randint(0, data.shape[0]-1)]
         return samples
 
-    def initRandomSamples(self, k=2000):
+    def initRandomSamples(self, k=1000):
+        if(k==-1):
+            k = 10000 #default value
         samples = np.ones((k, self.num_visible_nodes + 1))
         for i in range(k):
             samples[i,1:] = np.random.choice([0,1],self.num_visible_nodes)
         return samples
 
-    def train(self, data, max_epochs=1000, learning_rate=0.1, m=2000, k=5):
-        initSamples = self.initRandomSamples()
+    def train(self, data, max_epochs=1000, learning_rate=0.1, m=1000, k=5):
+        initSamples = self.initRandomSamples(m)
         num_examples = data.shape[0]
 
         # Insert bias units of 1 into the first column.
         data = np.insert(data, 0, 1, axis=1)
 
         for epoch in range(max_epochs):
-            samples = self.getRandomSamples(data)
-
+            if(m != -1):
+                samples = self.getRandomSamples(m)
             # positive phase
-            pos_activations = np.dot(samples, self.weights)
+            if(m == -1):
+                pos_activations = np.dot(data, self.weights)
+            else:
+                pos_activations = np.dot(samples, self.weights)
+
             pos_probs = self._logistic(pos_activations)
             pos_probs[:,0] = 1 # bias unit
-            pos_hidden_states = pos_probs > np.random.rand(m, self.num_hidden_node + 1)
-            pos_associations = np.dot(samples.T, pos_hidden_states)
+
+            if(m == -1):
+                pos_associations = np.dot(data.T, pos_probs)
+            else:
+                pos_associations = np.dot(samples.T, pos_probs)
 
             # negative phase
             # Start the alternating Gibbs sampling.
@@ -73,7 +82,11 @@ class RBM:
             # Update weights
             self.weights += learning_rate * ((pos_associations - neg_associations) / num_examples)
 
-            error = np.sum((samples - neg_probs) ** 2)
+            if(m == -1):
+                error = np.sum((data - neg_probs) ** 2)
+            else:
+                error = np.sum((samples - neg_probs) ** 2)
+
             print("Epoch %s: error is %s" % (epoch, error))
 
 
@@ -103,12 +116,12 @@ class RBM:
         return 1.0 / (1 + np.exp(-x))
 
 if __name__ == '__main__':
-    r = RBM(num_visible=784, num_hidden=784)
+    r = RBM(num_visible=784, num_hidden=1000)
     dt = np.dtype('>u4, >u4, >u4, >u4, (10000,784)u1')
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    r.train(imgs, max_epochs = 5000)
+    r.train(imgs, max_epochs=2000, m=-1)
     generated = r.markovChain(10)
 
     for img in generated:
