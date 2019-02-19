@@ -1,0 +1,5 @@
+Learning rate = 0.1
+
+Converged at a certain error, therefor both results look similar, even though the second one had 30 times more epochs
+
+Also used whole data set for every epoch
