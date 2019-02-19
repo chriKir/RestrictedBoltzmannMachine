@@ -1,5 +1,5 @@
 Run with:
-  python RestrictedBoltzmannMachine /<Number of visible nodes/> /<Number of hidden nodes/>
+  python RestrictedBoltzmannMachine -Number of visible nodes- -Number of hidden nodes-
 
 Default values:
 
