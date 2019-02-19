@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from random import *
 from matplotlib import pyplot as plt
 
@@ -119,7 +120,15 @@ class RBM:
         return 1.0 / (1 + np.exp(-x))
 
 if __name__ == '__main__':
-    r = RBM(num_visible=784, num_hidden=1000)
+
+    if(len(sys.argv) < 3):
+        num_visible=784
+        num_hidden=1000
+    else:
+        num_visible = int(sys.argv[1])
+        num_hidden = int(sys.argv[2])
+
+    r = RBM(num_visible, num_hidden)
     dt = np.dtype('>u4, >u4, >u4, >u4, (10000,784)u1')
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
