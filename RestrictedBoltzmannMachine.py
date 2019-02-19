@@ -27,7 +27,7 @@ class RBM:
 
     def initRandomSamples(self, k=1000):
         if(k==-1):
-            k = 10000 #default value
+            k = 10000 #default data size
         samples = np.ones((k, self.num_visible_nodes + 1))
         for i in range(k):
             samples[i,1:] = np.random.choice([0,1],self.num_visible_nodes)
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    r.train(imgs, max_epochs=2000)
+    r.train(imgs, max_epochs=20000)
     generated = r.markovChain(10)
 
     for img in generated:
