@@ -134,11 +134,18 @@ if __name__ == '__main__':
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
     r.train(imgs, max_epochs=20000)
-    generated = r.markovChain(10)
+    lst = []
+    generated1 = r.markovChain(20)
+    generated2 = r.markovChain(20)
+    generated3 = r.markovChain(20)
+    lst.append(generated1)
+    lst.append(generated2)
+    lst.append(generated3)
 
-    for img in generated:
-        first_image = img
-        first_image = np.array(first_image, dtype='float')
-        pixels = first_image.reshape((28, 28))
-        plt.imshow(pixels, cmap='gray')
-        plt.show()
+    for generated in lst:
+	    for img in generated:
+	        first_image = img
+	        first_image = np.array(first_image, dtype='float')
+	        pixels = first_image.reshape((28, 28))
+	        plt.imshow(pixels, cmap='gray')
+	        plt.show()
