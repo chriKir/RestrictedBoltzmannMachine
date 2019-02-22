@@ -150,7 +150,7 @@ if __name__ == '__main__':
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    max_epochs = 20000
+    max_epochs = 1000
     error_list_default = r.train(imgs, max_epochs, learning_rate=0.01)
     error_list_decreaseLr = r.train(imgs, max_epochs, learning_rate=0.01, learning_rate_decay=1, epsilon=5E-3)
     error_list_increaseLr = r.train(imgs, max_epochs, learning_rate=0.01, learning_rate_decay=1, epsilon=-5E-3)
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     plt.title('Error values with Adaptive Learning Rate (initial learning rate = 0.01')
     plt.xlabel('Number of epochs')
     plt.ylabel('Error values')
-    plt.xticks(np.arange(max_epochs, step=100))
+    plt.xticks(np.arange(max_epochs, step=50))
     plt.plot(epochs, error_list_default, 'r',
              epochs, error_list_decreaseLr, 'g',
              epochs, error_list_increaseLr, 'b')
