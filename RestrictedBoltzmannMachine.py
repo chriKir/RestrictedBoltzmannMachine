@@ -120,6 +120,7 @@ class RBM:
         return 1.0 / (1 + np.exp(-x))
 
 if __name__ == '__main__':
+    np.random.seed()
 
     if(len(sys.argv) < 3):
         num_visible=784
