@@ -144,8 +144,10 @@ if __name__ == '__main__':
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    max_epochs = 20000
-    error_list = r.train(imgs, max_epochs)
+    max_epochs = 20
+    error_list_default = r.train(imgs, max_epochs)
+    error_list_lr0_5 = r.train(imgs, max_epochs, learning_rate=0.5)
+    error_list_lr0_01 = r.train(imgs, max_epochs, learning_rate=0.01)
 
     # Plotting
     #error_list = [x for x in error_list]
@@ -154,7 +156,10 @@ if __name__ == '__main__':
     plt.xlabel('Number of epochs')
     plt.ylabel('Error values')
     plt.xticks(np.arange(max_epochs, step=100))
-    plt.plot(epochs, error_list)
+    plt.plot(epochs, error_list_default, 'r',
+             epochs, error_list_lr0_5, 'g',
+             epochs, error_list_lr0_01, 'b')
+    plt.legend(['learning rate=0.1', 'learning rate=0.5', 'learning rate=0.01'])
     plt.savefig('result_original.png')
 
     lst = []
