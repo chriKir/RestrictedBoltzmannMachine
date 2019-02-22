@@ -1,0 +1,9 @@
+Learning rate = 0.01
+epsilon = 0.001
+increase learning rate by: (1 + epsilon)* learning_rate
+decrease learning rate by: (1 - epsilon)* learning_rate
+
+Observation of 3 test cases:
+- No change: the error drop significally after 5-7 epochs, then stable
+- Increase learning rate: stable
+- Decrease learning rate: stable 
