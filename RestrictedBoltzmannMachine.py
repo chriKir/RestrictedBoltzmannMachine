@@ -44,6 +44,9 @@ class RBM:
         # Insert bias units of 1 into the first column.
         data = np.insert(data, 0, 1, axis=1)
 
+        # For plotting
+        error_list = list()
+
         for epoch in range(max_epochs):
             if(m != -1):
                 samples = self.getRandomSamples(data,m)
@@ -92,6 +95,8 @@ class RBM:
                 error = np.sum((samples - neg_probs) ** 2)
 
             print("Epoch %s: error is %s" % (epoch, error))
+            error_list.append(error)
+        return error_list
 
 
 
@@ -119,8 +124,11 @@ class RBM:
     def _logistic(self, x):
         return 1.0 / (1 + np.exp(-x))
 
+    def setSeed(self):
+        seed = np.random.randint(1000000)
+        np.random.seed(seed)
+
 if __name__ == '__main__':
-    np.random.seed()
 
     if(len(sys.argv) < 3):
         num_visible=784
@@ -130,11 +138,25 @@ if __name__ == '__main__':
         num_hidden = int(sys.argv[2])
 
     r = RBM(num_visible, num_hidden)
+    r.setSeed()
+
     dt = np.dtype('>u4, >u4, >u4, >u4, (10000,784)u1')
     mnist = np.fromfile('t10k-images-idx3-ubyte', dtype=dt)['f4'][0]
     imgs = np.zeros((10000, 784), dtype=np.dtype('b'))
     imgs[mnist > 127] = 1
-    r.train(imgs, max_epochs=20000)
+    max_epochs = 20000
+    error_list = r.train(imgs, max_epochs)
+
+    # Plotting
+    #error_list = [x for x in error_list]
+    epochs = np.arange(max_epochs)
+    plt.title('Error values with default settings')
+    plt.xlabel('Number of epochs')
+    plt.ylabel('Error values')
+    plt.xticks(np.arange(max_epochs, step=100))
+    plt.plot(epochs, error_list)
+    plt.savefig('result_original.png')
+
     lst = []
     generated1 = r.markovChain(20)
     generated2 = r.markovChain(20)
